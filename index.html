@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Practice Tracker</title>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
+
+<link rel="stylesheet" href= "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> <script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"> </script> <script src= "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"> </script>
+
+<link rel="shortcut icon" type="image/x-icon" href="logo.gif" />
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1f1f1f;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        .mycontainer {
+            max-width: 100%;
+            margin: 5px auto;
+            padding: 20px;
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            position: relative;
+            margin-top: 30px;
+            margin-bottom: 1px;
+            padding-bottom: 1px;
+        }
+        #motivation {
+            
+            top: 10px;
+            left: 10px;
+            font-size: 18px;
+            color: #555;
+            font-weight: bold;
+        }
+        #heading {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #51f57d;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        .input-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .input-section label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #bbb;
+        }
+        .input-section input[type="number"] {
+            flex: 1;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: #fff;
+            outline: none;
+        }
+        .button-section {
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 3px;
+        }
+        button#deleteEntry {
+            background-color: #ca4545;
+            margin-right: 10px;
+        }
+        button#exportData {
+            background-color: #74caf2;
+            margin-right: 1%;
+            width: 48%;
+            display: none;     <!-- edited -->
+        }
+        button#exportData:hover, button#deleteEntry:hover {
+            background-color: #45a049;
+            display: none; <!-- edited -->        }
+        #importData {
+            display: none;
+        }
+        canvas {
+            width: 100%;
+            height: 200px;
+            background-color: #333;
+            border-radius: 8px;
+        }
+        .statistics-section {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .statistics-section h2 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .statistics-section p {
+            margin: 5px 0;
+            color: #bbb;
+        }
+        #stats {
+            color: #51f57d;
+        }
+        #fileSystem {
+            max-width: 100%;
+            margin: 5px auto;
+            padding: 20px;
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            text-align: center;
+           
+        }
+        #importDataBtn {
+        
+            width: 48%;
+            margin-left: 1%;
+            display: none; <!-- edited -->
+        }
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-fixed-top navbar-inverse"> <div role="navigation"> <div class="container"> <div class="navbar-header"> <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> <a href="#" id="motivation" class="navbar-brand">IIT CSE</a> </div> <div class="navbar-collapse collapse"> <ul class="nav navbar-nav navbar-right"> <li class="active"><a href="index.html">Home</a></li> <li> <a href="mock.html">Mocks</a> </li> <li><a href="mailto:pritambsak@gmail.com">Contact</a> </li> </ul> </div> </div> </div> </nav>
+        
+        <div class="mycontainer">
+        <h2 id="heading">Preparation Tracker</h2>
+        <form id="questionForm">
+            <div class="input-section">
+                <label for="questionCount">Questions Attempted:</label>
+                <input type="number" id="questionCount" required placeholder="Questions Done Today">
+            </div>
+            <div class="input-section">
+                <label for="timeSpent">Time Spent:</label>
+                <input type="number" id="timeSpent" step="0.01" required placeholder="Time Spent Today">
+            </div>
+            <div class="button-section">
+                <button type="button" id="deleteEntry">Delete Last Entry</button>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+        <div class="statistics-section">
+            <h2 id="stats">Question Stats</h2>
+            <canvas id="questionChart"></canvas>
+            <p>Total Questions Attempted: <span id="totalQuestions"></span></p>
+            <p>Average Questions per Day: <span id="averageQuestions"></span></p>
+            <p>Best Day for Questions: <span id="bestDayQuestions"></span></p>
+        </div>
+        <div class="statistics-section">
+            <h2 id="stats">Time Stats</h2>
+            <canvas id="timeChart"></canvas>
+            <p>Total Time Spent: <span id="totalTimeSpent"></span> hours</p>
+            <p>Average Time Spent per Day: <span id="averageTimeSpent"></span> hours</p>
+            <p>Best Day for Time Spent: <span id="bestDayTimeSpent"></span> hours</p>
+        </div>
+    </div>
+  
+    
+    <div id="fileSystem" display="none">
+        <button type="button" id="exportData">Export Data</button>
+        <input type="file" id="importData">
+        <button type="button" id="importDataBtn">Import Data</button>
+    </div>
+    <script>
+        // Function to filter data for the last month
+        function filterLastMonthData(labels, data) {
+            const today = new Date();
+            const oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(today.getMonth() - 1);
+
+            const filteredLabels = [];
+            const filteredData = [];
+
+            for (let i = 0; i < labels.length; i++) {
+                const date = new Date(labels[i]);
+                if (date >= oneMonthAgo && date <= today) {
+                    filteredLabels.push(labels[i]);
+                    filteredData.push(data[i]);
+                }
+            }
+
+            return { filteredLabels, filteredData };
+        }
+
+        // Function to update the chart with new data
+        function updateChart(labels, data, canvasId, label) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(75, 192, 192, 0.6)');
+            gradient.addColorStop(1, 'rgba(153, 102, 255, 0.6)');
+
+            const { filteredLabels, filteredData } = filterLastMonthData(labels, data);
+
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: filteredLabels,
+                    datasets: [{
+                        label: label,
+                        data: filteredData,
+                        fill: true,
+                        borderColor: '#4CAF50',
+                        backgroundColor: gradient,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(255, 99, 132, 0.8)',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: 'rgba(255, 99, 132, 1)',
+                        pointHoverBorderColor: '#fff',
+                        pointRadius: 5,
+                        pointHitRadius: 10,
+                    }]
+                },
+                options: {
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.raw;
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuart'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#555'
+                            },
+                            ticks: {
+                                color: '#bbb',
+                                callback: function(value, index, values) {
+                                    return value;
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: '#555'
+                            },
+                            ticks: {
+                                color: '#bbb',
+                                callback: function(value, index, values) {
+                                    // Format date to display only date and month
+                                    const date = new Date(filteredLabels[index]);
+                                    return date.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to calculate question statistics
+        function calculateQuestionStats(data) {
+            const totalQuestions = data.reduce((acc, val) => acc + val, 0);
+            const averageQuestions = totalQuestions / data.length || 0;
+            const bestDayQuestions = Math.max(...data);
+
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            document.getElementById('averageQuestions').textContent = averageQuestions.toFixed(2);
+            document.getElementById('bestDayQuestions').textContent = bestDayQuestions;
+        }
+
+        // Function to calculate time statistics
+        function calculateTimeStats(timeSpentData) {
+            const totalHoursSpent = timeSpentData.reduce((acc, val) => acc + val, 0); // Converted to hours
+            const averageTimeSpent = totalHoursSpent / timeSpentData.length || 0;
+            const bestDayTimeSpent = Math.max(...timeSpentData); // Converted to hours
+
+            document.getElementById('totalTimeSpent').textContent = totalHoursSpent.toFixed(2); // Rounded to two decimal places
+            document.getElementById('averageTimeSpent').textContent = averageTimeSpent.toFixed(2); // Rounded to two decimal places
+            document.getElementById('bestDayTimeSpent').textContent = bestDayTimeSpent.toFixed(2); // Rounded to two decimal places
+        }
+
+        // Function to handle delete last entry button click
+        document.getElementById('deleteEntry').addEventListener('click', function() {
+            // Get existing data from local storage
+            const labels = JSON.parse(localStorage.getItem('questionLabels')) || [];
+            const data = JSON.parse(localStorage.getItem('questionData')) || [];
+            const timeSpentData = JSON.parse(localStorage.getItem('timeSpentData')) || [];
+
+            // Remove the last entry
+            labels.pop();
+            data.pop();
+            timeSpentData.pop();
+
+            // Update local storage
+            localStorage.setItem('questionLabels', JSON.stringify(labels));
+            localStorage.setItem('questionData', JSON.stringify(data));
+            localStorage.setItem('timeSpentData', JSON.stringify(timeSpentData));
+
+            // Refresh the page to update the charts
+            location.reload();
+        });
+
+        // Function to handle form submission
+        document.getElementById('questionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const questionCount = parseInt(document.getElementById('questionCount').value);
+            const timeSpent = parseFloat(document.getElementById('timeSpent').value); // Parse as float
+
+            // Get existing data from local storage
+            const labels = JSON.parse(localStorage.getItem('questionLabels')) || [];
+            const data = JSON.parse(localStorage.getItem('questionData')) || [];
+            const timeSpentData = JSON.parse(localStorage.getItem('timeSpentData')) || [];
+
+            // Add new data
+            const today = new Date().toISOString().slice(0, 10); // Get today's date in 'YYYY-MM-DD' format
+            labels.push(today);
+            data.push(questionCount);
+            timeSpentData.push(timeSpent);
+
+            // Save updated data to local storage
+            localStorage.setItem('questionLabels', JSON.stringify(labels));
+            localStorage.setItem('questionData', JSON.stringify(data));
+            localStorage.setItem('timeSpentData', JSON.stringify(timeSpentData));
+
+            // Refresh the page
+            location.reload();
+        });
+
+        // Function to export data
+        document.getElementById('exportData').addEventListener('click', function() {
+            const labels = JSON.parse(localStorage.getItem('questionLabels')) || [];
+            const data = JSON.parse(localStorage.getItem('questionData')) || [];
+            const timeSpentData = JSON.parse(localStorage.getItem('timeSpentData')) || [];
+            const exportData = {
+                labels: labels,
+                data: data,
+                timeSpentData: timeSpentData
+            };
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+        // Function to import data
+        document.getElementById('importDataBtn').addEventListener('click', function() {
+            document.getElementById('importData').click();
+        });
+
+        document.getElementById('importData').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const importData = JSON.parse(e.target.result);
+                    localStorage.setItem('questionLabels', JSON.stringify(importData.labels));
+                    localStorage.setItem('questionData', JSON.stringify(importData.data));
+                    localStorage.setItem('timeSpentData', JSON.stringify(importData.timeSpentData));
+                    location.reload();
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Load initial data and update the charts
+        const questionLabels = JSON.parse(localStorage.getItem('questionLabels')) || [];
+        const questionData = JSON.parse(localStorage.getItem('questionData')) || [];
+        const timeSpentData = JSON.parse(localStorage.getItem('timeSpentData')) || [];
+        updateChart(questionLabels, questionData, 'questionChart', 'Questions Attempted');
+        updateChart(questionLabels, timeSpentData, 'timeChart', 'Time Spent (hours)');
+        calculateQuestionStats(questionData);
+        calculateTimeStats(timeSpentData);
+    </script>
+</body>
+</html>

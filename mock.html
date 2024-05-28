@@ -391,8 +391,9 @@
                                <tr><th>Physics</th><td>${test.physics}</td></tr>
                                <tr><th>Chemistry</th><td>${test.chemistry}</td></tr>
                                <tr><th>Maths</th><td>${test.maths}</td></tr>
-                               <tr><th>Correct Questions</th><td>${test.correctQuestions}/${test.totalQuestions}</td></tr>
+                               <tr><th>Correct Questions</th><td>${test.correctQuestions}</td></tr>
                                <tr><th>Questions Attempted</th><td>${test.questionsAttempted}</td></tr>
+                               <tr><th>Total Questions</th><td>${test.totalQuestions}</td></tr>
                                <tr> <th>Accuracy</th><td>${ Math.round((test.correctQuestions / test.questionsAttempted)* 10000) / 100}%</td></tr>
                              </table>`;
         

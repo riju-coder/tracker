@@ -1,2 +1,4 @@
 ## JEE preparation tracker
-[click here to see demo](https://riju-coder.github.io/tracker/)
+**visit me:-**
+[Home page](https://riju-coder.github.io/tracker/)
+[mock page](https://riju-coder.github.io/tracker/mock.html)

@@ -14,9 +14,7 @@
       color: #51f57d;
     }
     #mycontainer {
-      
       margin-top: 70px;
-      
     }
     #gridSystem{
         display: grid; 
@@ -202,8 +200,7 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li><a href="index.html">Home</a></li>
-            <li class="active"><a <href="mock.html">Mocks</a></li>
-            <li><a href="mailto:pritambsak@gmail.com">Contact</a></li>
+            <li class="active"><a><href="mock.html">Mocks</a></li>
           </ul>
         </div>
       </div>
@@ -282,168 +279,201 @@
       
     </div>
     <ul class="mock-list" id="mockList"></ul>
-    <!-- <div class="button-section">
-      <button id="exportData" onclick="exportData()">Export Data</button>
-      <input type="file" id="importData" onchange="importData(event)" style="display: none;">
-      <button onclick="document.getElementById('importData').click()">Import Data</button>
-    </div> -->
+
   </div>
 
   <script>
-    let sectionCountsNew2 = JSON.parse(localStorage.getItem('sectionCountsNew2')) || [0, 0];
-    let mockCountsNew2 = JSON.parse(localStorage.getItem('mockCountsNew2')) || [0, 0];
-    let mockTests = JSON.parse(localStorage.getItem('mockTests')) || [];
+document.addEventListener("DOMContentLoaded", function () {
+    // Load data from localStorage on page load
+    loadMockTestsFromStorage();
+    updateCounts();
+});
 
-    function updateCounters() {
-      let jeeMainsSolved = 0;
-      let jeeMainsGiven = 0;
-      let jeeAdvancedSolved = 0;
-      let jeeAdvancedGiven = 0;
+let section1Count = 0;
+let section2Count = 0;
+let mockCount1 = 0;
+let mockCount2 = 0;
 
-      mockTests.forEach(test => {
-        if (test.type === 'JEE Mains') {
-          jeeMainsSolved += test.questionsAttempted;
-          jeeMainsGiven++;
-        } else if (test.type === 'JEE Advanced') {
-          jeeAdvancedSolved += test.questionsAttempted;
-          jeeAdvancedGiven++;
-        }
-      });
-
-      sectionCountsNew2[0] = jeeMainsSolved;
-      mockCountsNew2[0] = jeeMainsGiven;
-      sectionCountsNew2[1] = jeeAdvancedSolved;
-      mockCountsNew2[1] = jeeAdvancedGiven;
-
-      document.getElementById('section1Count').innerText = sectionCountsNew2[0];
-      document.getElementById('mockCount1').innerText = mockCountsNew2[0];
-      document.getElementById('section2Count').innerText = sectionCountsNew2[1];
-      document.getElementById('mockCount2').innerText = mockCountsNew2[1];
-    }
-
-    function saveData() {
-      localStorage.setItem('sectionCountsNew2', JSON.stringify(sectionCountsNew2));
-      localStorage.setItem('mockCountsNew2', JSON.stringify(mockCountsNew2));
-      localStorage.setItem('mockTests', JSON.stringify(mockTests));
-    }
-
-    function addMockTest() {
-      const type = document.querySelector('input[name="inlineRadioOptions"]:checked').value; 
-      const name = document.getElementById('mockName').value;
-      const marks = parseInt(document.getElementById('mockMarks').value);
-      const totalMarks = parseInt(document.getElementById('mockTotalMarks').value);
-      const physics = parseInt(document.getElementById('physicsScore').value);
-      const chemistry = parseInt(document.getElementById('chemistryScore').value);
-      const maths = parseInt(document.getElementById('mathsScore').value);
-      const correctQuestions = parseInt(document.getElementById('correctQuestions').value);
-      const totalQuestions = parseInt(document.getElementById('totalQuestions').value);
-      const questionsAttempted = parseInt(document.getElementById('questionsAttempted').value);
-      const date = new Date().toLocaleDateString();
-
-      if (type && name && !isNaN(marks) && !isNaN(totalMarks) && !isNaN(physics) && !isNaN(chemistry) && !isNaN(maths) && !isNaN(correctQuestions) && !isNaN(totalQuestions) && !isNaN(questionsAttempted)) {
-        const mockTest = { type, name, marks, totalMarks, physics, chemistry, maths, correctQuestions, totalQuestions, questionsAttempted, date };
-        mockTests.unshift(mockTest);
-        updateMockList();
-        updateCounters();
-        saveData();
-        document.querySelector('input[name="inlineRadioOptions"]:checked').value = 'Jee Mains';
-        document.getElementById('mockName').value = '';
-        document.getElementById('mockMarks').value = '';
-        document.getElementById('mockTotalMarks').value = '';
-        document.getElementById('physicsScore').value = '';
-        document.getElementById('chemistryScore').value = '';
-        document.getElementById('mathsScore').value = '';
-        document.getElementById('correctQuestions').value = '';
-        document.getElementById('totalQuestions').value = '';
-        document.getElementById('questionsAttempted').value = '';
-      } else {
-        alert('Please fill in all fields with valid data.');
-      }
-    }
-
-    function deleteLastMockTest() {
-      if (mockTests.length > 0) {
-        if (confirm('Are you sure you want to delete the last entry?')) {
-          mockTests.shift();
-          updateMockList();
-          updateCounters();
-          saveData();
-        }
-      } else {
-        alert('No entries to delete.');
-      }
-    }
-
-    function updateMockList() {
-  
-      const mockList = document.getElementById('mockList');
-      
-      mockList.innerHTML = '';
-      mockTests.forEach((test, index) => {
-        const li = document.createElement('li');
-        li.classList.add('listcss')
-        li.innerHTML = `<span>${test.name} - ${test.marks}/${test.totalMarks} &#10549;</span></span></span><span class="date">${test.date}</span> `;
-        li.onclick = () => toggleDetails(index);
-        
-        const details = document.createElement('div');
-        details.classList.add('mock-details');
-        
-        details.innerHTML = `<table>
-            <div ><input class="form-check-input" type="radio" name="" id="" value="" checked><span id="tableHeading">${test.type}</span></div>
-                               <tr><th>Physics</th><td>${test.physics}</td></tr>
-                               <tr><th>Chemistry</th><td>${test.chemistry}</td></tr>
-                               <tr><th>Maths</th><td>${test.maths}</td></tr>
-                               <tr><th>Correct Questions</th><td>${test.correctQuestions}</td></tr>
-                               <tr><th>Questions Attempted</th><td>${test.questionsAttempted}</td></tr>
-                               <tr><th>Total Questions</th><td>${test.totalQuestions}</td></tr>
-                               <tr> <th>Accuracy</th><td>${ Math.round((test.correctQuestions / test.questionsAttempted)* 10000) / 100}%</td></tr>
-                             </table>`;
-        
-        li.appendChild(details);
-        mockList.appendChild(li);
-      });
-    }
-
-    function toggleDetails(index) {
-  const details = document.querySelectorAll('.mock-details')[index];
-  if (details.classList.contains('expanded')) {
-    details.classList.remove('expanded');
-  } else {
-    details.classList.add('expanded');
-  }
+function updateCounts() {
+    document.getElementById('section1Count').innerText = section1Count;
+    document.getElementById('section2Count').innerText = section2Count;
+    document.getElementById('mockCount1').innerText = mockCount1;
+    document.getElementById('mockCount2').innerText = mockCount2;
 }
-    
-    
 
-    function exportData() {
-      const blob = new Blob([JSON.stringify(mockTests, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'mock_tests.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+function addMockTest() {
+    // Validation: Ensure all fields are filled
+    if (!validateInputs()) {
+        alert("Please fill out all fields.");
+        return;
     }
 
-    function importData(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          mockTests = JSON.parse(e.target.result);
-          updateMockList();
-          updateCounters();
-          saveData();
-        };
-        reader.readAsText(file);
-      }
+    const selectedSection = document.querySelector('input[name="inlineRadioOptions"]:checked').value;
+    const mockName = document.getElementById('mockName').value;
+    const mockMarks = document.getElementById('mockMarks').value;
+    const mockTotalMarks = document.getElementById('mockTotalMarks').value;
+    const physicsScore = document.getElementById('physicsScore').value;
+    const chemistryScore = document.getElementById('chemistryScore').value;
+    const mathsScore = document.getElementById('mathsScore').value;
+    const totalQuestions = document.getElementById('totalQuestions').value;
+    const questionsAttempted = document.getElementById('questionsAttempted').value;
+    const correctQuestions = document.getElementById('correctQuestions').value;
+    const accuracy = ((correctQuestions / questionsAttempted) * 100).toFixed(2) + '%';
+    const currentDate = new Date().toLocaleDateString();
+
+    let mockList = document.getElementById('mockList');
+
+    let newMock = document.createElement('li');
+    newMock.className = 'mock-entry';
+    newMock.innerHTML = `
+        ${selectedSection}: ${mockName} 
+        <span class="date">${currentDate}</span>
+        <div class="mock-details">
+          <table>
+            <tr><td>Marks</td><td>${mockMarks}/${mockTotalMarks}</td></tr>
+            <tr><td>Physics</td><td>${physicsScore}</td></tr>
+            <tr><td>Chemistry</td><td>${chemistryScore}</td></tr>
+            <tr><td>Maths</td><td>${mathsScore}</td></tr>
+            <tr><td>Total Questions</td><td>${totalQuestions}</td></tr>
+            <tr><td>Attempted</td><td>${questionsAttempted}</td></tr>
+            <tr><td>Correct</td><td>${correctQuestions}</td></tr>
+            <tr><td>Accuracy</td><td>${accuracy}</td></tr>
+          </table>
+        </div>`;
+
+    newMock.addEventListener('click', function () {
+        let details = this.querySelector('.mock-details');
+        details.classList.toggle('expanded');
+    });
+
+    // Prepend the new entry to the top of the list
+    mockList.prepend(newMock);
+
+    // Update counts
+    if (selectedSection === "JEE Mains") {
+        section1Count += parseInt(questionsAttempted);
+        mockCount1 += 1;
+    } else if (selectedSection === "JEE Advanced") {
+        section2Count += parseInt(questionsAttempted);
+        mockCount2 += 1;
     }
 
-    window.onload = function () {
-      updateCounters();
-      updateMockList();
+    updateCounts();
+    saveMockTestToStorage(selectedSection, mockName, mockMarks, mockTotalMarks, physicsScore, chemistryScore, mathsScore, totalQuestions, questionsAttempted, correctQuestions, currentDate);
+    clearInputFields();
+}
+
+function deleteLastMockTest() {
+    let mockList = document.getElementById('mockList');
+    if (mockList.children.length > 0) {
+        let lastMock = mockList.firstChild;
+        let selectedSection = lastMock.innerHTML.includes("JEE Mains") ? "JEE Mains" : "JEE Advanced";
+        let questionsAttempted = parseInt(lastMock.querySelectorAll('td')[4].innerText);
+
+        if (selectedSection === "JEE Mains") {
+            section1Count -= questionsAttempted;
+            mockCount1 -= 1;
+        } else if (selectedSection === "JEE Advanced") {
+            section2Count -= questionsAttempted;
+            mockCount2 -= 1;
+        }
+
+        mockList.removeChild(lastMock);
+        updateCounts();
+        removeLastMockTestFromStorage();
+    }
+}
+
+function validateInputs() {
+    const inputs = document.querySelectorAll('#mockName, #mockMarks, #mockTotalMarks, #physicsScore, #chemistryScore, #mathsScore, #totalQuestions, #questionsAttempted, #correctQuestions');
+    for (let input of inputs) {
+        if (input.value.trim() === '') {
+            return false;
+        }
+    }
+    return true;
+}
+
+function clearInputFields() {
+    document.getElementById('mockName').value = '';
+    document.getElementById('mockMarks').value = '';
+    document.getElementById('mockTotalMarks').value = '';
+    document.getElementById('physicsScore').value = '';
+    document.getElementById('chemistryScore').value = '';
+    document.getElementById('mathsScore').value = '';
+    document.getElementById('totalQuestions').value = '';
+    document.getElementById('questionsAttempted').value = '';
+    document.getElementById('correctQuestions').value = '';
+}
+
+function saveMockTestToStorage(section, name, marks, totalMarks, physics, chemistry, maths, totalQuestions, attempted, correct, date) {
+    const mockTests = JSON.parse(localStorage.getItem('mockTests')) || [];
+    const newMockTest = {
+        section,
+        name,
+        marks,
+        totalMarks,
+        physics,
+        chemistry,
+        maths,
+        totalQuestions,
+        attempted,
+        correct,
+        date
     };
-  </script>
+    mockTests.unshift(newMockTest); // Add to the beginning of the array
+    localStorage.setItem('mockTests', JSON.stringify(mockTests));
+}
+
+function loadMockTestsFromStorage() {
+    const mockTests = JSON.parse(localStorage.getItem('mockTests')) || [];
+    let mockList = document.getElementById('mockList');
+    for (const mockTest of mockTests) {
+        let newMock = document.createElement('li');
+        newMock.className = 'mock-entry';
+        const accuracy = ((mockTest.correct / mockTest.attempted) * 100).toFixed(2) + '%';
+        newMock.innerHTML = `
+            ${mockTest.section}: ${mockTest.name} 
+            <span class="date">${mockTest.date}</span>
+            <div class="mock-details">
+              <table>
+                <tr><td>Marks</td><td>${mockTest.marks}/${mockTest.totalMarks}</td></tr>
+                <tr><td>Physics</td><td>${mockTest.physics}</td></tr>
+                <tr><td>Chemistry</td><td>${mockTest.chemistry}</td></tr>
+                <tr><td>Maths</td><td>${mockTest.maths}</td></tr>
+                <tr><td>Total Questions</td><td>${mockTest.totalQuestions}</td></tr>
+                <tr><td>Attempted</td><td>${mockTest.attempted}</td></tr>
+                <tr><td>Correct</td><td>${mockTest.correct}</td></tr>
+                <tr><td>Accuracy</td><td>${accuracy}</td></tr>
+              </table>
+            </div>`;
+
+        newMock.addEventListener('click', function () {
+            let details = this.querySelector('.mock-details');
+            details.classList.toggle('expanded');
+        });
+
+        mockList.prepend(newMock); // Add each mock to the top of the list
+
+        if (mockTest.section === "JEE Mains") {
+            section1Count += parseInt(mockTest.attempted);
+            mockCount1 += 1;
+        } else if (mockTest.section === "JEE Advanced") {
+            section2Count += parseInt(mockTest.attempted);
+            mockCount2 += 1;
+        }
+    }
+}
+
+function removeLastMockTestFromStorage() {
+    const mockTests = JSON.parse(localStorage.getItem('mockTests')) || [];
+    if (mockTests.length > 0) {
+        mockTests.shift(); // Remove the first entry in the array
+        localStorage.setItem('mockTests', JSON.stringify(mockTests));
+    }
+}
+
+</script>
+
 </body>
 </html>

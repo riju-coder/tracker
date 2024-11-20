@@ -150,6 +150,10 @@
         #disp {
             display: none:
         }
+        .month{
+            text-align: center;
+            color: #bbb;
+        }
     </style>
 </head>
 <body>
@@ -159,7 +163,7 @@
         <h2 id="heading">Preparation Tracker</h2>
         <form id="questionForm">
             <div class="input-section">
-                <label for="questionCount">Questions Attempted:</label>
+                <label for="questionCount">Questions Attempted :</label>
                 <input type="number" id="questionCount" required placeholder="No. of Questions Done Today">
             </div>
             <div class="input-section">
@@ -171,6 +175,9 @@
                 <button type="submit">Submit</button>
             </div>
         </form>
+        <div class="month">
+                   <h2>December '24</h2>
+        </div>
         <div class="statistics-section">
             <h2 id="stats">Question Stats</h2>
             <canvas id="questionChart"></canvas>
